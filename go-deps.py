@@ -1,4 +1,6 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Parse a go.mod to generate a graph of dependencies.
 import argparse
 import json
 import subprocess
@@ -71,10 +73,11 @@ def reverse_dependencies(root, deps):
     return reverse_deps
 
 
-def print_graph_reverse(root, deps, module_of_interest):
+def print_graph_reverse(root, deps, module_of_interests):
     reverse_deps = reverse_dependencies(root, deps)
-    if module_of_interest is not None:
-        print(reverse_deps[module_of_interest])
+    if module_of_interests is not None:
+        for module in module_of_interests:
+            print(f"{module}: {reverse_deps[module]}")
     else:
         print(json.dumps(reverse_deps))
 
@@ -86,7 +89,7 @@ def main():
         "--reverse", "-r", help="Print reverse dependencies.", action="store_true"
     )
     parser.add_argument(
-        "--module", "-m", help="Print reverse dependencies for this module."
+        "--module", "-m", help="Print reverse dependencies for this module.", nargs="*"
     )
     args = parser.parse_args()
 
